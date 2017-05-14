@@ -1,4 +1,3 @@
-#include <iostream>
 #include "interface.Container.h"
 #include "PushPopContainer.h"
 #include "interface.IndexedContainer.h"
@@ -9,61 +8,66 @@
 #include "StaticArray.h"
 #include "StaticDeque.h"
 #include "LinkedList.h"
+#include <iostream>
 #include <conio.h>
+#include <ctime>
 
 using namespace std;
 
-
 int main()
 {
-	Container<int> *arr[3];
+	const int elem = 15;
+	const int elemPop = 5;
+	const int elemPushFront = 5;
 
-	arr[0] = new Stack<int>();
-	arr[1] = new StaticDeque<int>(20);
-	arr[2] = new Queue<int>;
+	Container<int> **arr = new Container<int>*[2];
 
-	for (Container<int>*c:arr){
-		PushPopContainer<int>*A = dynamic_cast<PushPopContainer<int>*>(c);
-		if (A != NULL){
-			A->push(3);
-			A->push(15);
-			A->push(10);
-			A->push(20);
-			A->push(11);
-			A->push(16);
+	arr[0] = new Stack<int>;
+	arr[1] = new StaticDeque<int>;
+	
+	PushPopContainer<int>*A;
+	Deque<int>*D;
+
+	for (int i = 0; i < 2; i++) {
+		if (A = dynamic_cast < PushPopContainer<int>* >(arr[i])) {
+			for (int j = 1; j < 5; j++)
+				A->push(j);
 		}
-		Deque<int>*D = dynamic_cast<Deque<int>*>(c);
-		if (D != NULL) {
-			D->pushFront(1);
-			D->pushFront(2);
-			D->pushFront(3);
-			D->pushBack(30);
-			D->pushBack(20);
-			D->pushBack(10);
-		}
-	}
-
-	for (Container<int>*c : arr){
-		cout << c->toString() << endl;
-		cout << "Size: " << c->Size() << endl << endl;
-	}
-	for (Container<int>*c : arr){
-		PushPopContainer<int>*A = dynamic_cast<PushPopContainer<int>*>(c);
-		if (A != NULL) {
-			while (!c->isEmpty()){
-				cout << "Delete element: " << A->pop() << endl;
-				cout << "Size: " << c->Size() << endl;
+		if (D = dynamic_cast < Deque<int>* >(arr[i])) {
+			for (int j = 1; j < 5; j++) {
+				D->pushFront(j);
+				D->pushBack(-(j));
 			}
 		}
-		Deque<int>*D = dynamic_cast<Deque<int>*>(c);
-		if (D != NULL) {
-			while (!c->isEmpty()){
-				cout << "Delete element: " << D->popBack() << endl;
-				cout << "Size: " << c->Size() << endl;
-			}
-		}
-		cout << endl;
+		cout << arr[i]->toString() << endl;
+		cout <<"Size: " << arr[i]->Size() << endl;
 	}
+	cout << endl;
+
+	for (int i = 0; i < 2; i++) {
+		while (!arr[i]->isEmpty()){
+			int val;
+			if (A = dynamic_cast <PushPopContainer<int>*>(arr[i])){
+				val = A->pop();
+			}
+			cout << endl;
+			if (D = dynamic_cast <Deque<int>*>(arr[i])){
+				val = D->popBack();
+			}
+			cout <<"Val: " <<val << endl;
+			cout << "Size: "<< arr[i]->Size() << endl;
+		}
+	}
+	cout << endl;
+		
+	Stack<int> *a = new Stack<int>();
+	a->push(10);
+
+	Stack<int> a1(*a), a2 = *a;
+
+	cout << *a << endl << a1 << endl << a2;
+
+
 	system("pause");
 	return 0;
 }

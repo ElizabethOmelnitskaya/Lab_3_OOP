@@ -1,42 +1,50 @@
 #pragma once
 #include "PushPopContainer.h"
 #include "Node.h"
+#include "JavaIterator.h"
 
-template<class T>
+template <class T>
 class Queue : public PushPopContainer<T> {
 private:
 	node<T> *head, *tail;
 	int size;
 public:
+	Queue<T>& operator=(Queue<T> const&);
+
 	Queue();
+	Queue(Queue<T> const&);
+
+	JavaIterator<T&>* createIterator();
+	JavaIterator<T const&>* createIterator() const;
 
 	int Size() const;
-	bool isEmpty() const;
 	char* toString() const;
 
 	bool push(T const&);
 	T pop();
 	T peek() const;
 	T& peek();
-
 	~Queue();
 };
 
-template<class T>
-Queue<T>::Queue()
+template <class T> Queue<T>::Queue()
 {
 	head = tail = NULL;
 	size = 0;
 }
 
-template<class T>
+template <typename T>
+Queue<T>::Queue(Queue<T> const& copy) {
+	node<T> *tmpCopy = copy->tail;
+	do {
+		push(tmpCopy->value);
+	} while ((tmpCopy = tmpCopy->prev) != NULL);
+}
+
+template <class T>
 int Queue<T>::Size() const { return size; }
 
-template<class T>
-bool Queue<T>::isEmpty() const { return head == NULL; }
-
-template<class T>
-char* Queue<T>::toString() const {
+template <class T> char* Queue<T>::toString() const {
 	node<T> *tmp = head; // текущий элемент
 	char *res = new char[100]{ NULL };
 
@@ -61,8 +69,7 @@ char* Queue<T>::toString() const {
 	return res;
 }
 
-template<class T>
-T Queue<T>::pop() {
+template <class T> T Queue<T>::pop() {
 	if (isEmpty()) throw "Queue is empty!";
 
 	T tmp_val = head->value;
@@ -79,21 +86,18 @@ T Queue<T>::pop() {
 	return tmp_val;
 }
 
-template<class T>
-T Queue<T>::peek() const {
+template <class T> T Queue<T>::peek() const {
 	if (isEmpty()) throw "Queue is empty!";
 	return head->value;
 }
 
-template <class T>
-T& Queue<T>::peek() {
+template <class T> T& Queue<T>::peek() {
 	if (isEmpty()) throw "Queue is empty!";
 	return head->value;
 }
 
-template<class T>
-bool Queue<T>::push(T const& value) {
-	node<T> *newNode = new node<T>;// Выделяем память под новый хвост очереди
+template <class T> bool Queue<T>::push(T const& value) {
+	node<T> *newNode = new node<T>();// Выделяем память под новый хвост очереди
 
 	newNode->value = value;//Заполняем поле значения нового хвоста
 	newNode->next = NULL;// Записываем в поле адреса нового хвоста ноль, так как за ничего нету
@@ -104,12 +108,9 @@ bool Queue<T>::push(T const& value) {
 	tail = newNode;//Записываем в указель хвоста адрес действительного хвоста
 	size++;// Кол-во элементов очереди увеличивается
 	return true;
-
 }
 
-template<class T>
-Queue<T>::~Queue()
-{
+template <class T> Queue<T>::~Queue() {
 	node<T> *tmp;
 
 	while (head) {
@@ -117,4 +118,64 @@ Queue<T>::~Queue()
 		delete head;
 		head = tmp;
 	}
+}
+
+template <class T, class U> class QueueIterator : public JavaIterator<U> {
+private:
+	node<T> currentIter;
+public:
+	QueueIterator(node<T>*);
+
+	U next();
+	bool hasNext() const;
+};
+
+template <typename T, typename U>
+QueueIterator<T, U>::QueueIterator(node<T> *initialNode) {
+	currentNode = initialNode;
+}
+
+template <typename T, typename U>
+U QueueIterator<T, U>::next() {
+	T value = NULL;
+
+	if (currentIter == NULL) return value;
+
+	value = currentIter->value;
+	currentIter = currentIter->next;
+
+	return value;
+}
+
+template <typename T, typename U>
+bool QueueIterator<T, U>::hasNext() const {
+	return currentIter != NULL &&
+		currentIter->next != NULL;
+}
+
+template <typename T>
+JavaIterator<T&>* Queue<T>::createIterator() {
+	return new QueueIterator<T, T&>(head);
+}
+template <typename T>
+
+JavaIterator<T const&>* Queue<T>::createIterator() const {
+	return new QueueIterator<T, T const&>(head);
+}
+
+template<class T>
+Queue<T>& Queue<T>::operator=(const Queue<T>& other) {
+	node<T> * tmp;
+	while (head && head->value != STATIC_NULL_VALUE) {
+		tmp = head->next;
+		delete head;
+		head = tmp;
+	}
+	tmp = other.head;
+	size = 0;
+	while (tmp) {
+		this->push(tmp->value);
+		tmp = tmp->next;
+	}
+	return *this;
 }

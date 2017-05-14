@@ -1,7 +1,7 @@
 #pragma once
 #include "interface.Container.h"
 
-template<class T>
+template <class T>
 class Deque : public virtual Container<T> {
 public:
 	virtual bool pushFront(T const& value) = 0;

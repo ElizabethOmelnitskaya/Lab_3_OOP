@@ -1,18 +1,24 @@
 #pragma once
 #include "Deque.h"
 #include "Node.h"
+#include "JavaIterator.h"
 
-template<class T>
+template <class T>
 class StaticDeque : public Deque<T> {
 private:
 	node<T> *head, *tail;
 	int size;
-	T *arr;
+	int *arr;
 public:
-	StaticDeque(T default_value);
+	StaticDeque<T>& operator=(StaticDeque<T> const&);
+
+	JavaIterator<T&>* createIterator();
+	JavaIterator<T const&>* createIterator() const;
+
+	StaticDeque();
+	StaticDeque(StaticDeque<T> const&);
 
 	int Size() const;
-	bool isEmpty() const;
 	char* toString() const;
 
 	bool pushBack(T const&);
@@ -23,29 +29,32 @@ public:
 	T peekFront() const;
 	T& peekBack();
 	T& peekFront();
-
+	
 	~StaticDeque();
 };
 
-template<class T>
-StaticDeque<T>::StaticDeque(T default_value)
-{
+template <typename T> StaticDeque<T>::StaticDeque() {
 	head = tail = NULL;
 	size = 0;
 }
 
-template<class T>
+template <typename T>
+StaticDeque<T>::StaticDeque(StaticDeque<T> const& copy) {
+	DataNode<T> *tmpCopy = copy->tail;
+
+	do {
+		pushBack(tmpCopy->value);
+	} while ((tmpCopy = tmpCopy->prev) != NULL);
+}
+
+template <typename T>
 StaticDeque<T>::~StaticDeque() { delete[] arr; }
 
-template<class T>
+template <typename T>
 int StaticDeque<T>::Size() const { return size; }
 
-template<class T>
-bool StaticDeque<T>::isEmpty() const { return size == 0; }
-
-template<class T>
-char* StaticDeque<T>::toString() const {
-	node <T>*tmp = head;
+template <typename T> char* StaticDeque<T>::toString() const {
+	node<T> *tmp = head;
 	char *res = new char[100]{ NULL };
 
 	strcat(res, "StaticDeque:\n ");
@@ -68,10 +77,8 @@ char* StaticDeque<T>::toString() const {
 	return res;
 }
 
-template<class T>
-bool StaticDeque<T>::pushBack(T const& value) {
-	node<T> *newNode = new node<T>();
-
+template <typename T> bool StaticDeque<T>::pushBack(T const& value) {
+	node<T> *newNode = new node<T>(value);
 	newNode->value = value;
 
 	if (isEmpty()) {
@@ -89,10 +96,8 @@ bool StaticDeque<T>::pushBack(T const& value) {
 	return true;
 }
 
-template<class T>
-bool StaticDeque<T>::pushFront(T const& value) {
-	node<T> *newNode = new node<T>;
-
+template <typename T> bool StaticDeque<T>::pushFront(T const& value) {
+	node<T> *newNode = new node<T>(value);
 	newNode->value = value;
 
 	if (isEmpty()) {
@@ -108,20 +113,19 @@ bool StaticDeque<T>::pushFront(T const& value) {
 	return true;
 }
 
-template<class T>
+template <typename T>
 T StaticDeque<T>::peekBack() const { return arr[size - 1]; }
 
-template <class T>
-T& StaticDeque<T>::peekBack() { return arr[size - 1];  }
+template <typename T>
+T& StaticDeque<T>::peekBack() { return arr[size - 1]; }
 
-template<class T>
+template <typename T>
 T StaticDeque<T>::peekFront() const { return arr[0]; }
 
-template<class T>
+template <typename T>
 T& StaticDeque<T>::peekFront() { return arr[0]; }
 
-template<class T>
-T StaticDeque<T>::popBack() {
+template <typename T> T StaticDeque<T>::popBack() {
 	if (isEmpty()) return -1;
 
 	T value = tail->value;
@@ -143,10 +147,9 @@ T StaticDeque<T>::popBack() {
 	return value;
 }
 
-template<class T>
-T StaticDeque<T>::popFront() {
+template <typename T> T StaticDeque<T>::popFront() {
 
-	if (isEmpty()) return NULL;
+	if (isEmpty()) return -1;
 
 	T value = tail->value;
 	if (Size() == 1) {
@@ -167,3 +170,55 @@ T StaticDeque<T>::popFront() {
 	return value;
 }
 
+template <typename T>
+JavaIterator<T&>* StaticDeque<T>::createIterator() {
+	return new StaticDequeIterator<T, T&>(head);
+}
+
+template <typename T>
+JavaIterator<T const&>* StaticDeque<T>::createIterator() const {
+	return new StaticDequeIterator<T, T const&>(head);
+}
+
+template<class T>
+StaticDeque<T>& StaticDeque<T>::operator=(const StaticDeque<T>& other) {
+	delete[]arr;
+	this->size = other.size;
+	arr = new T[size];
+	for (int i = 0; i < size; i++)
+		this->arr[i] = other.arr[i];
+}
+
+template <class T, class U>
+class StaticDequeIterator : public JavaIterator<U> {
+private:
+	node<T> *currentIter;
+public:
+	StaticDequeIterator(node<T>*);
+
+	U next();
+	bool hasNext() const;
+};
+
+template <typename T, typename U>
+StaticDequeIterator<T, U>::StaticDequeIterator(node<T> *initialNode) {
+	currentIter = initialNode;
+}
+
+template <typename T, typename U>
+U StaticDequeIterator<T, U>::next() {
+	T value = NULL;
+
+	if (currentIter == NULL) return value;
+
+	value = currentIter->value;
+	currentIter = currentIter->next;
+
+	return value;
+}
+
+template <typename T, typename U>
+bool StaticDequeIterator<T, U>::hasNext() const {
+	return currentIter != NULL &&
+		currentIter->next != NULL;
+}

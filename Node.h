@@ -1,18 +1,20 @@
 #pragma once
 
-template<class T>
+template <class T>
 class node
 {
 public:
-	T value;
-	node *prev, *next;
-	node();
+	int value;
+	node *prev;
+	node *next;
+
+	node(T);
 };
 
-template <class T> 
-node<T>::node()
+template <class T>
+node<T>::node(T val)
 {
-	value = T();
+	value = val;
 	next = NULL;
 	prev = NULL;
 }

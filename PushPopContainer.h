@@ -1,7 +1,7 @@
 #pragma once
 #include "interface.Container.h"
 
-template<class T>
+template <class T>
 class PushPopContainer : public virtual Container<T> {
 public:
 	virtual bool push(T const& value) = 0;

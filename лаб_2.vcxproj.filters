@@ -15,10 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Deque.h">
+    <ClCompile Include="test.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Node.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="PushPopContainer.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="interface.Container.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Deque.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="interface.IndexedContainer.h">
@@ -30,16 +44,7 @@
     <ClInclude Include="LinkedList.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Node.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="PushPopContainer.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Queue.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Stack.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="StaticArray.h">
@@ -48,10 +53,8 @@
     <ClInclude Include="StaticDeque.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="test.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
+    <ClInclude Include="JavaIterator.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

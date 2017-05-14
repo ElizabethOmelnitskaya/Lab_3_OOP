@@ -2,16 +2,21 @@
 #include "PushPopContainer.h"
 #include "Node.h"
 
-template<class T>
+template <class T>
 class Stack : public PushPopContainer<T> {
 private:
 	node<T> *head;
 	int size;// Емкость стека
 public:
+	Stack<T>& operator=(Stack<T> const&);
+
 	Stack();
+	Stack(Stack<T> const&);
+
+	JavaIterator<T&>* createIterator();
+	JavaIterator<T const&>* createIterator() const;
 
 	int Size() const; // получить размер стека
-	bool isEmpty() const; // пуст ли стек
 	char *toString() const;
 
 	T peek() const;
@@ -22,20 +27,17 @@ public:
 	~Stack();
 };
 
-template<class T>
+template <typename T>
 Stack<T>::Stack()
 {
 	head = NULL;
 	size = 0;
 }
 
-template<class T>
+template <typename T>
 int Stack<T>::Size() const { return size; } // вернуть размер стека
 
-template<class T>
-bool Stack<T>::isEmpty() const { return head == NULL; }
-
-template<class T>
+template <typename T>
 char* Stack<T>::toString() const {
 	node<T> *tmp = head; // текущий элемент
 	char *res = new char[100]{ NULL };
@@ -60,30 +62,25 @@ char* Stack<T>::toString() const {
 	return res;
 }
 
-template<class T>
-T Stack<T>::pop() {
+template <typename T> T Stack<T>::pop() {
 	if (isEmpty()) throw "Stack is empty!";
-
 	T tmp_val = head->value;
-
 	node<T> *tmp_del = head->next;
 	delete head;
 	head = tmp_del;
-	if (!isEmpty()) head->prev = NULL;
 	size--;
+	if (!isEmpty()) head->prev = NULL;
 	return tmp_val;
 }
 
-template<class T>
+template <typename T>
 T Stack<T>::peek() const { return head->value; }
 
-template <class T>
+template <typename T>
 T& Stack<T>::peek() { return head->value; }
 
-
-template<class T>
-bool Stack<T>::push(T const& value) {
-	node<T> *newNode = new node<T>;
+template <typename T> bool Stack<T>::push(T const& value) {
+	node<T> *newNode = new node<T>(value);
 
 	newNode->value = value;
 	newNode->next = head;
@@ -96,8 +93,7 @@ bool Stack<T>::push(T const& value) {
 	return true;
 }
 
-template<class T>
-Stack<T>::~Stack()
+template <typename T> Stack<T>::~Stack()
 {
 	node<T> *tmp;
 	while (head) {
@@ -105,4 +101,83 @@ Stack<T>::~Stack()
 		delete head;
 		head = tmp;
 	}
+}
+
+template<class T>
+Stack<T>& Stack<T>::operator=(Stack<T> const& other) {
+	node<T> * tmp;
+	while (head) {
+		tmp = head->next;
+		delete head;
+		head = tmp;
+	}
+	tmp = other.tail;
+	size = 0;
+	while (tmp) {
+		this->push(tmp->value);
+		tmp = tmp->prev;
+	}
+	return *this;
+}
+
+template <class T, class U> class StackIterator : public JavaIterator<U> {
+private:
+	node<T> *currentIter;
+public:
+	StackIterator(node<T>*);
+
+	U next();
+	bool hasNext() const;
+};
+
+template <typename T, typename U>
+StackIterator<T, U>::StackIterator(node<T> *initNode) { currentIter = initNode; }
+
+template <typename T, typename U>
+bool StackIterator<T, U>::hasNext() const {
+	return currentIter != NULL &&
+		currentIter->next != NULL;
+}
+
+template <typename T, typename U>
+U StackIterator<T, U>::next() {
+	T value = NULL;
+	if (currentIter == NULL) return value;
+
+	value = currentIter->value;
+	currentIter = currentIter->next;
+
+	return value;
+}
+
+template <typename T>
+JavaIterator<T&>* Stack<T>::createIterator() {
+	return new StackIterator<T, T&>(head);
+}
+
+template <typename T>
+JavaIterator<T const&>* Stack<T>::createIterator() const {
+	return new StackIterator<T, T const&>(head);
+}
+
+template <typename T>
+Stack<T>::Stack(Stack<T> const& copy) {
+	node<T> *tmpCopy = copy.head;
+	node<T> *tmp = NULL, *prev = NULL;
+
+	do {
+		if (tmp == NULL) {
+			head = new node<T>(tmpCopy->value);
+			tmp = head;
+		}
+		else {
+			prev = tmp;
+			tmp = new node<T>(tmpCopy->value);
+
+			prev->next = tmp;
+			tmp->prev = prev;
+		}
+	} while ((tmpCopy = tmpCopy->next) != NULL);
+
+	size = copy.size;
 }

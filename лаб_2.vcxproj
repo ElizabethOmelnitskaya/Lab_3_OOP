@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{EA154EDA-312D-4E8F-B85F-84DD37D9F8D3}</ProjectGuid>
-    <RootNamespace>лаб3</RootNamespace>
+    <ProjectGuid>{CBE15B6F-9FBD-4DC0-87E7-BA928E1650FE}</ProjectGuid>
+    <RootNamespace>лаб_2</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -64,10 +64,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="Deque.h" />
     <ClInclude Include="interface.Container.h" />
     <ClInclude Include="interface.IndexedContainer.h" />
     <ClInclude Include="interface.InsertableContainer.h" />
+    <ClInclude Include="JavaIterator.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="PushPopContainer.h" />
@@ -75,9 +79,6 @@
     <ClInclude Include="Stack.h" />
     <ClInclude Include="StaticArray.h" />
     <ClInclude Include="StaticDeque.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
